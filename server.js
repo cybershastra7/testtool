@@ -1,28 +1,27 @@
-const express = require('express');
-const cors = require('cors');
-const crawlWebsite = require('./crawler');
+const express = require("express");
+const crawlWebsite = require("./crawler"); // Import the crawlWebsite function
+const path = require("path");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-app.post('/crawl', async (req, res) => {
+app.get("/crawl", async (req, res) => {
+    const url = req.query.url;
+    if (!url) {
+        return res.status(400).json({ error: "URL is required" });
+    }
+
     try {
-        const { url } = req.body;
-        if (!url) {
-            return res.status(400).json({ error: 'URL is required' });
-        }
-
         const results = await crawlWebsite(url);
         res.json(results);
     } catch (error) {
-        console.error('Error during crawl:', error);
-        res.status(500).json({ error: 'Failed to crawl website' });
+        console.error(error);
+        res.status(500).json({ error: "An error occurred while crawling the website." });
     }
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server is running on port ${port}`);
 });
