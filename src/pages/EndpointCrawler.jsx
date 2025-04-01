@@ -9,21 +9,20 @@ export function EndpointCrawler() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!url) return;
+    if (!url) {
+      setError('Please enter a valid URL.');
+      return;
+    }
 
     setLoading(true);
     setError('');
+    setResults({ siteEndpoints: [], jsEndpoints: [] });
+
     try {
-      const response = await fetch('http://localhost:3000/crawl', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url }),
-      });
+      const response = await fetch(`/crawl?url=${encodeURIComponent(url)}`); // Use GET instead of POST
 
       if (!response.ok) {
-        throw new Error('Failed to crawl website');
+        throw new Error('Failed to crawl website.');
       }
 
       const data = await response.json();
@@ -121,4 +120,4 @@ export function EndpointCrawler() {
       </div>
     </div>
   );
-}
+}  
