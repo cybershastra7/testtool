@@ -24,15 +24,15 @@ async function extractEndpointsFromHTML(html, baseURL) {
     // Extract links from <a> tags
     $('a[href], link[href]').each((_, element) => {
         let href = $(element).attr('href');
-        if (href && href.startsWith('/')) href = baseURL + href; // Resolve relative paths
-        if (href && href.startsWith('http')) endpoints.add(href);
+        if (href.startsWith('/')) href = baseURL + href; // Resolve relative paths
+        if (href.startsWith('http')) endpoints.add(href);
     });
 
     // Extract JavaScript file URLs
     $('script[src]').each((_, element) => {
         let src = $(element).attr('src');
-        if (src && src.startsWith('/')) src = baseURL + src; // Resolve relative paths
-        if (src && src.startsWith('http')) jsFiles.push(src);
+        if (src.startsWith('/')) src = baseURL + src; // Resolve relative paths
+        if (src.startsWith('http')) jsFiles.push(src);
     });
 
     return { endpoints, jsFiles };
